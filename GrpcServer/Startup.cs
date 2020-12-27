@@ -18,6 +18,7 @@ namespace GrpcServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+            services.AddGrpcReflection();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,10 +36,15 @@ namespace GrpcServer
                 endpoints.MapGrpcService<GreeterService>();
                 endpoints.MapGrpcService<CustomersService>();
 
-                endpoints.MapGet("/", async context =>
+                //endpoints.MapGet("/", async context =>
+                //{
+                //    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                //});
+
+                if (env.IsDevelopment())
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                });
+                    endpoints.MapGrpcReflectionService();
+                }
             });
         }
     }
